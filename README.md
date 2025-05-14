@@ -21,12 +21,25 @@ Sistema para centralizar e compartilhar dados de pacientes (carteirinhas de vaci
 
 - Docker
 - Docker Compose
+- Git
 
-## Executando o Sistema
+## Como clonar e executar o projeto
+
+### 1. Clone o repositório
+
+```bash
+# Clone o repositório
+git clone https://github.com/JowDaniel/BD2-EP1-SUS.git
+
+# Entre no diretório do projeto
+cd BD2-EP1-SUS
+```
+
+### 2. Executando o Sistema
 
 Você pode executar o sistema completo de duas maneiras:
 
-### 1. Usando o script de inicialização
+#### Usando o script de inicialização
 
 ```bash
 # Dar permissão de execução ao script (necessário apenas na primeira vez)
@@ -36,7 +49,7 @@ chmod +x start.sh
 ./start.sh
 ```
 
-### 2. Manualmente com Docker Compose
+#### Manualmente com Docker Compose
 
 ```bash
 # Parar qualquer instância anterior
@@ -129,4 +142,14 @@ Para desenvolver novas funcionalidades:
 2. Reconstrua a imagem Docker afetada: `docker compose build [serviço]`
 3. Reinicie os serviços: `docker compose up`
 
-O código-fonte está montado como volumes nos containers, então muitas alterações são refletidas automaticamente sem necessidade de reconstruir as imagens. 
+O código-fonte está montado como volumes nos containers, então muitas alterações são refletidas automaticamente sem necessidade de reconstruir as imagens.
+
+## Contribuição
+
+Para contribuir com o projeto:
+
+1. Crie um fork do repositório
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Faça commit das suas alterações (`git commit -am 'Adiciona nova funcionalidade'`)
+4. Faça push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Crie um novo Pull Request 
