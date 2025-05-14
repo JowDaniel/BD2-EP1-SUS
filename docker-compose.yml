@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: sus_postgres
+    environment:
+      POSTGRES_DB: sus_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql:/sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sus_network
+    restart: unless-stopped
+
+  # Serviço para inicialização do banco de dados
+  db-init:
+    image: postgres:15
+    container_name: sus_db_init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./sql:/sql
+    command: /sql/init-db.sh
+    networks:
+      - sus_network
+
+  # Backend Python com FastAPI
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sus_backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sus_db
+      - POSTGRES_PORT=5432
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://localhost:8080"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - sus_network
+    restart: unless-stopped
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sus_frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0
+    networks:
+      - sus_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  sus_network:
+    driver: bridge 

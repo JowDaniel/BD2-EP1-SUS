@@ -1,0 +1,8 @@
+{
+  "short_name": "SUS Sistema",
+  "name": "Sistema de Compartilhamento de Dados de Pacientes do SUS",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2196f3",
+  "background_color": "#ffffff"
+} 
